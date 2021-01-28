@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from "axios";
 
 const People = (props) => {
     const { peopleToShow } = props;
     return(
         <>
             {peopleToShow.map(person =>
-                <p key={person.id}>{person.name} {person.phoneNumber}</p>
+                <p key={person.id}>{person.name} {person.number}</p>
             )}
         </>
     )
@@ -45,16 +46,18 @@ const PersonForm = (props) => {
 }
 
 const App = () => {
-    const [ people, setPeople] = useState([
-        {
-            id: 1,
-            name: 'Arto Hellas',
-            phoneNumber: '040-1231244'
-        }
-    ])
+    const [ people, setPeople] = useState([])
     const [ newName, setNewName ] = useState('');
     const [ newNumber, setNewNumber ] = useState('');
     const [ newSearch, setNewSearch ] = useState('');
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:3001/people')
+            .then(response => {
+                setPeople(response.data);
+            })
+    }, [])
 
     const handleNameChange = (event) => {
         setNewName(event.target.value);
